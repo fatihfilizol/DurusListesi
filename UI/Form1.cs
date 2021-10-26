@@ -152,7 +152,7 @@ namespace UI
 
 
 
-            //Stunları listeden çekip yeni listeye atma
+            //Sütunları listeden çekip yeni listeye atma
             List<String> listColumns = new List<String>();
             listColumns.Add("İş Emri");
             for (int j = 0; j < listDurus.Count; j++)
@@ -172,21 +172,27 @@ namespace UI
             }
             listColumns.Add("Toplam");
             dataGridView2.ColumnCount = listColumns.Count;
+
+
             //Sütun Ekleme
             for (int i = 0; i < listColumns.Count; i++)
             {
                 dataGridView2.Columns[i].Name = listColumns[i];
             }
 
-
-            List<String> listMola = new List<string>();
-            List<String> listAriza = new List<string>();
-            List<String> listArge = new List<string>();
-            List<String> listSetup = new List<string>();
+            //Verileri kategorize ederek eşleştirme
+            List<int> listMola = new List<int>() {0,0,0,0,0,0,0,0};
+            List<int> listAriza = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 };
+            List<int> listArge = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 };
+            List<int> listSetup = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 };
             List<String> listMolaKontrol = new List<string>();
             List<String> listArizaKontrol = new List<string>();
             List<String> listArgeKontrol = new List<string>();
             List<String> listSetupKontrol = new List<string>();
+
+            string atama;
+            char atamaindex;
+            int sira = 0;
             for (int j = 0; j < listIsEmri.Count; j++)
             {
                 for (int i = 0; i < listSonuc.Count; i++)
@@ -194,49 +200,46 @@ namespace UI
                     
                     if (listSonuc[i].DurusNedeni == listColumns[1])
                     {
-                        if (listMolaKontrol.Contains(listSonuc[i].IsEmri.ToString()))
+                        if (!listMolaKontrol.Contains(listSonuc[i].IsEmri.ToString()))
                         {
-                            listMola.Add("");
-                        }
-                        else 
-                        { 
-                            listMola.Add(listSonuc[i].DurusSuresi.ToString());
+                            atama = listSonuc[i].IsEmri.ToString();
+                            atamaindex = atama[atama.Length - 1];
+                            sira = Convert.ToInt32(atamaindex.ToString());
+                            listMola.Insert(sira - 1, Convert.ToInt32(listSonuc[i].DurusSuresi));
                             listMolaKontrol.Add(listSonuc[i].IsEmri.ToString());
+
                         }
                     }
                     if (listSonuc[i].DurusNedeni == listColumns[2])
                     {
-                        if (listArizaKontrol.Contains(listSonuc[i].IsEmri.ToString()))
+                        if (!listArizaKontrol.Contains(listSonuc[i].IsEmri.ToString()))
                         {
-                            listAriza.Add("");
-                        }
-                        else
-                        {
-                            listAriza.Add(listSonuc[i].DurusSuresi.ToString());
+                            atama = listSonuc[i].IsEmri.ToString();
+                            atamaindex = atama[atama.Length - 1];
+                            sira = Convert.ToInt32(atamaindex.ToString());
+                            listAriza.Insert(sira-1, Convert.ToInt32(listSonuc[i].DurusSuresi));
                             listArizaKontrol.Add(listSonuc[i].IsEmri.ToString());
                         }
                     }
                     if (listSonuc[i].DurusNedeni == listColumns[3])
                     {
-                        if (listSetupKontrol.Contains(listSonuc[i].IsEmri.ToString()))
+                        if (!listSetupKontrol.Contains(listSonuc[i].IsEmri.ToString()))
                         {
-                            listSetup.Add("");
-                        }
-                        else
-                        {
-                            listSetup.Add(listSonuc[i].DurusSuresi.ToString());
+                            atama = listSonuc[i].IsEmri.ToString();
+                            atamaindex = atama[atama.Length - 1];
+                            sira = Convert.ToInt32(atamaindex.ToString());
+                            listSetup.Insert(sira-1, Convert.ToInt32(listSonuc[i].DurusSuresi));
                             listSetupKontrol.Add(listSonuc[i].IsEmri.ToString());
                         }
                     }
                     if (listSonuc[i].DurusNedeni == listColumns[4])
                     {
-                        if (listArgeKontrol.Contains(listSonuc[i].IsEmri.ToString()))
+                        if (!listArgeKontrol.Contains(listSonuc[i].IsEmri.ToString()))
                         {
-                            listArge.Add("");
-                        }
-                        else
-                        {
-                            listArge.Add(listSonuc[i].DurusSuresi.ToString());
+                            atama = listSonuc[i].IsEmri.ToString();
+                            atamaindex = atama[atama.Length - 1];
+                            sira = Convert.ToInt32(atamaindex.ToString());
+                            listArge.Insert(sira-1, Convert.ToInt32(listSonuc[i].DurusSuresi));
                             listArgeKontrol.Add(listSonuc[i].IsEmri.ToString());
                         }
                     }
@@ -246,17 +249,31 @@ namespace UI
 
 
             //Satır Ekleme
+            int toplamMola = 0;
+            int toplamAriza = 0;
+            int toplamSetup = 0;
+            int toplamArge = 0;
+            int toplam = 0;
+            int toplamToplam = 0;
             for (int i = 0; i < listIsEmri.Count; i++)
             {
+                toplamMola += listMola[i];
+                toplamAriza += listAriza[i];
+                toplamSetup += listSetup[i];
+                toplamArge += listArge[i];
+                toplam = (listMola[i] + listAriza[i] + listSetup[i] + listArge[i]);
+                toplamToplam += toplam;
 
                 dataGridView2.Rows.Add(listIsEmri[i].IsEmriNumarasi.ToString()
                     , listMola[i].ToString()
                           , listAriza[i].ToString()
                           , listSetup[i].ToString()
-                          , listArge[i].ToString());
-                
-                
+                          , listArge[i].ToString()
+                          , toplam.ToString()
+
+                          );  
             }
+            dataGridView2.Rows.Add("Toplam",toplamMola,toplamAriza,toplamSetup,toplamArge,toplamToplam);
             //dataGridView2.DataSource = listSonuc;
             
         }
