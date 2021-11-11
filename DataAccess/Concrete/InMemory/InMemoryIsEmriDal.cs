@@ -22,7 +22,8 @@ namespace DataAccess.Concrete.InMemory
                 new IsEmri{IsEmriNumarasi=1006,Baslangic=Convert.ToDateTime("3/1/2017 00:00:00"),Bitis=Convert.ToDateTime("3/1/2017 08:00:00")},
                 new IsEmri{IsEmriNumarasi=1007,Baslangic=Convert.ToDateTime("3/1/2017 08:00:00"),Bitis=Convert.ToDateTime("3/1/2017 16:00:00")},
                 new IsEmri{IsEmriNumarasi=1008,Baslangic=Convert.ToDateTime("3/1/2017 16:00:00"),Bitis=Convert.ToDateTime("4/1/2017 00:00:00")},
-                new IsEmri{IsEmriNumarasi=1009,Baslangic=Convert.ToDateTime("4/1/2017 00:00:00"),Bitis=Convert.ToDateTime("4/1/2017 08:00:00")}
+                new IsEmri{IsEmriNumarasi=1009,Baslangic=Convert.ToDateTime("4/1/2017 00:00:00"),Bitis=Convert.ToDateTime("4/1/2017 08:00:00")},
+                new IsEmri{IsEmriNumarasi=1010,Baslangic=Convert.ToDateTime("4/1/2017 08:00:00"),Bitis=Convert.ToDateTime("4/1/2017 16:00:00")}//ekleme
             };
         }
         public List<IsEmri> GetAll()

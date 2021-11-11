@@ -35,7 +35,9 @@ namespace DataAccess.Concrete.InMemory
                 new Durus{DurusNedeni="Mola",Baslangic=Convert.ToDateTime("3.1.2017 14:00:00"),Bitis=Convert.ToDateTime("3.1.2017 14:10:00")},
                 new Durus{DurusNedeni="Arıza",Baslangic=Convert.ToDateTime("3.1.2017 15:00:00"),Bitis=Convert.ToDateTime("3.1.2017 18:45:00")},
                 new Durus{DurusNedeni="Mola",Baslangic=Convert.ToDateTime("3.1.2017 20:00:00"),Bitis=Convert.ToDateTime("3.1.2017 20:30:00")},
-                new Durus{DurusNedeni="Mola",Baslangic=Convert.ToDateTime("3.1.2017 22:00:00"),Bitis=Convert.ToDateTime("3.1.2017 22:10:00")}
+                new Durus{DurusNedeni="Mola",Baslangic=Convert.ToDateTime("3.1.2017 22:00:00"),Bitis=Convert.ToDateTime("3.1.2017 22:10:00")},
+                new Durus{DurusNedeni="Elektrik Arıza",Baslangic=Convert.ToDateTime("4.1.2017 03:00:00"),Bitis=Convert.ToDateTime("4.1.2017 05:30:00")},
+                new Durus{DurusNedeni="Resmi Tatil",Baslangic=Convert.ToDateTime("4.1.2017 9:00:00"),Bitis=Convert.ToDateTime("4.1.2017 09:30:00")}
             };
         }
         public List<Durus> GetAll()
