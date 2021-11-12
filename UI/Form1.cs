@@ -36,14 +36,14 @@ namespace UI
 
             int k = 0;
 
-            for (int i = 0; i < listIsEmri.Count; i++)
+            for (int i = 0; i < listIsEmri.Count; i++)//İş Emirlerini Gezmek İçin
             {
                 durus.Clear();
-                for (int j = 0; j < listDurus.Count; j++)
+                for (int j = 0; j < listDurus.Count; j++)//Duruşları gezmek için
                 {
-                    if (DateTime.Compare(listDurus[j].Baslangic, listIsEmri[i].Bitis) < 0 && DateTime.Compare(listIsEmri[i].Baslangic, listDurus[j].Baslangic) < 0)
+                    if (DateTime.Compare(listDurus[j].Baslangic, listIsEmri[i].Bitis) < 0 && DateTime.Compare(listIsEmri[i].Baslangic, listDurus[j].Baslangic) < 0)//Duruş Aralığının, Gelen İş Emrinin İçerisinde Olup Olmadığını Sorguluyor
                     {
-                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listDurus[j].Bitis < listIsEmri[i].Bitis)
+                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listDurus[j].Bitis < listIsEmri[i].Bitis)//Duruş Süresi tek İş Emri aralığındaysa
                         {
                             TimeSpan durusDakika = listDurus[j].Baslangic.Subtract(listDurus[j].Bitis);
                             Decimal durusSuresi = Convert.ToDecimal(durusDakika.TotalMinutes) * -1;
@@ -74,7 +74,7 @@ namespace UI
                             }
                         }
 
-                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis)
+                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis)//İş Emri süresi bitiyor fakat Duruş devam ediyorsa
                         {
                             TimeSpan durusDakikaAsan = listDurus[j].Baslangic.Subtract(listIsEmri[i].Bitis);
                             Decimal durusSuresiAsan = Convert.ToDecimal(durusDakikaAsan.TotalMinutes) * -1;
@@ -100,7 +100,7 @@ namespace UI
                                 k++;
                             }
                         }
-                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis && durus.Contains(listDurus[j].DurusNedeni))
+                        if (listIsEmri[i].Baslangic < listDurus[j].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis && durus.Contains(listDurus[j].DurusNedeni))//Duruş bir İş Emri Süresini aşıyorsa
                         {
                             TimeSpan durusDakikaArtan = listIsEmri[i].Bitis.Subtract(listDurus[j].Bitis);
                             Decimal durusSuresiArtan = Convert.ToDecimal(durusDakikaArtan.TotalMinutes) * -1;
@@ -118,7 +118,7 @@ namespace UI
                             }
                         }
                     }
-                    if (listDurus[j].Baslangic < listIsEmri[i].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis)
+                    if (listDurus[j].Baslangic < listIsEmri[i].Baslangic && listIsEmri[i].Bitis < listDurus[j].Bitis)//Duruş gelen İş Emrinden önce başlamış ve gelen İş Emri içerisinde de devam ediyorsa gelen iş emri içerisindeki süreyi hesaplamak için
                     {
                         TimeSpan durusDakikaKalan = listIsEmri[i].Baslangic.Subtract(listIsEmri[i].Bitis);
                         Decimal durusSuresiKalan = Convert.ToDecimal(durusDakikaKalan.TotalMinutes) * -1;
@@ -150,39 +150,38 @@ namespace UI
 
             var list = new List<object>();
 
-            var a = listSonuc.GroupBy(l => l.IsEmri).OrderBy(o => o.Key).ToList();
-            var b = listIsEmri.GroupBy(l => l.IsEmriNumarasi).OrderBy(o => o.Key).Select(i => i.Key);
-            //var ass = a.Select(c => c.Key).Where(c => b.Contains(c) == false);
-            var ass = b.Where(c => a.Select(l => l.Key).Contains(c) == false).Select(ekelenecek => new Sonuc
+            var listScreen = listSonuc.GroupBy(l => l.IsEmri).OrderBy(o => o.Key).ToList();//Duruşları İş Emirlerine göre gruplar
+            var bosIsEmirleri = listIsEmri.GroupBy(l => l.IsEmriNumarasi).OrderBy(o => o.Key).Select(i => i.Key);//Zaman aralığında duruş olmayan iş emirlerini çeker
+            var bosIsEmriEkleme = bosIsEmirleri.Where(c => listScreen.Select(l => l.Key).Contains(c) == false).Select(ekelenecek => new Sonuc
             {
                 DurusNedeni = null,
                 DurusSuresi = 0,
                 IsEmri = ekelenecek
-            }).ToList();
-            listSonuc.AddRange(ass);
-            a = listSonuc.GroupBy(l => l.IsEmri).OrderBy(o => o.Key).ToList();
+            }).ToList();//Zaman aralığında Duruş olmayan İş Emirlerini null şekilde oluşturur
+            listSonuc.AddRange(bosIsEmriEkleme);//Zaman aralığında Duruş olmayan İş Emirlerini null şekilde Sonuc listesine ekler
+            listScreen = listSonuc.GroupBy(l => l.IsEmri).OrderBy(o => o.Key).ToList();//Sonuç Listesinin son halini İş Emirlerine gçre gruplayarak Ekran Listesine atar
 
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable();//Burdan Sonra Ekran Listesinde gelen verileri tablo haline getirip datagrdiview'e datasource ediyor
             List<KeyValuePair<string, decimal>> toplamList = new List<KeyValuePair<string, decimal>>();
 
-            foreach (var item in a)
+            foreach (var column in listScreen)
             {
                 if (!dt.Columns.Contains("İş Emri"))
                     dt.Columns.Add("İş Emri");
 
                 DataRow dr = dt.NewRow();
-                dr["İş Emri"] = item.Key;
+                dr["İş Emri"] = column.Key;
                 decimal toplam = 0;
-                foreach (var item2 in item)
+                foreach (var row in column)
                 {
-                    if (item2.DurusNedeni != null && !dt.Columns.Contains(item2.DurusNedeni))
-                        dt.Columns.Add(item2.DurusNedeni);
-                    if (item2.DurusNedeni != null)
+                    if (row.DurusNedeni != null && !dt.Columns.Contains(row.DurusNedeni))
+                        dt.Columns.Add(row.DurusNedeni);
+                    if (row.DurusNedeni != null)
                     {
-                        dr[item2.DurusNedeni] = item2.DurusSuresi;
-                        toplamList.Add(new KeyValuePair<string, decimal>(item2.DurusNedeni, item2.DurusSuresi));
+                        dr[row.DurusNedeni] = row.DurusSuresi;
+                        toplamList.Add(new KeyValuePair<string, decimal>(row.DurusNedeni, row.DurusSuresi));
                     }
-                    toplam += item2.DurusSuresi;
+                    toplam += row.DurusSuresi;
 
                 }
                 if (!dt.Columns.Contains("Toplam"))
